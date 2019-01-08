@@ -11,6 +11,7 @@ class Paint {
     this.renderer = new THREE.WebGLRenderer({
       antialias: true
     });
+    this.reqNumber = 0;
   }
 
   init(context) {
@@ -32,10 +33,9 @@ class Paint {
     this.lightColor = context.props.lightColor;
 
     if (this.mesh !== undefined) {
+      this.scene.remove(this.mesh);
       this.mesh.geometry.dispose();
       this.mesh.material.dispose();
-      this.scene.remove(this.mesh);
-      delete this.mesh;
     }
     const directionalLightObj = this.scene.getObjectByName(DIRECTIONAL_LIGHT);
     if (directionalLightObj) {
@@ -56,12 +56,16 @@ class Paint {
     directionalLight.name = DIRECTIONAL_LIGHT;
     this.scene.add(directionalLight);
 
-    this.addSTLToScene();
+    this.reqNumber += 1;
+    this.addSTLToScene(this.reqNumber);
   }
 
-  addSTLToScene() {
+  addSTLToScene(reqId) {
     this.loader.crossOrigin = '';
     this.loader.load(this.url, geometry => {
+      if (this.reqNumber !== reqId) {
+        return;
+      }
       // Calculate mesh noramls for MeshLambertMaterial.
       geometry.computeFaceNormals();
       geometry.computeVertexNormals();
