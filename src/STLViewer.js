@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import { ScaleLoader } from 'halogenium';
 import Paint from './Paint';
 
@@ -20,7 +20,7 @@ class STLViewer extends Component {
     lightY: PropTypes.number,
     lightZ: PropTypes.number,
     lightColor: PropTypes.string,
-    rotationSpeeds: PropTypes.arrayOf(PropTypes.number),
+    rotationSpeeds: PropTypes.arrayOf(PropTypes.number)
   };
 
   static defaultProps = {
@@ -37,22 +37,22 @@ class STLViewer extends Component {
     lightY: 0,
     lightZ: 1,
     lightColor: '#ffffff',
-    rotationSpeeds: [0, 0, 0.02],
+    rotationSpeeds: [0, 0, 0.02]
   };
 
   componentDidMount() {
     let camera, scene, renderer, mesh, controls;
     let rotate = this.props.rotate;
-    let paint = new Paint(this);
+    this.paint = new Paint();
 
-    init();
+    init.bind(this)();
 
     /**
      * The init method for the 3D scene
      * @returns {void}
      */
     function init() {
-      paint.init();
+      this.paint.init(this);
     }
 
     /**
@@ -94,16 +94,15 @@ class STLViewer extends Component {
     let { rotate, rotationSpeeds } = nextProps;
 
     this.props = nextProps;
-    let paint = new Paint(this);
 
-    init();
+    init.bind(this)();
 
     /**
      * The init method for the 3D scene
      * @returns {void}
      */
     function init() {
-      paint.init();
+      this.paint.init(this);
     }
 
     /**
@@ -136,29 +135,35 @@ class STLViewer extends Component {
     };
   }
 
+  componentWillUnmount() {
+    this.paint.clean();
+    delete this.paint;
+  }
+
   render() {
     const { width, height, modelColor } = this.props;
-
-    return(
+    return (
       <div
         className={this.props.className}
         style={{
           width: width,
           height: height,
-          overflow: 'hidden',
+          overflow: 'hidden'
         }}
       >
-        <div style={{
-          height: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }} >
+        <div
+          style={{
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
           <ScaleLoader color={modelColor} size="16px" />
         </div>
       </div>
     );
-  };
+  }
 }
 
 module.exports = STLViewer;

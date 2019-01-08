@@ -1,9 +1,19 @@
 import THREE from './Three';
-import ReactDOM  from 'react-dom';
+import ReactDOM from 'react-dom';
 let OrbitControls = require('three-orbit-controls')(THREE);
 
+const DIRECTIONAL_LIGHT = 'directionalLight';
+
 class Paint {
-  constructor(context) {
+  constructor() {
+    this.loader = new THREE.STLLoader();
+    this.scene = new THREE.Scene();
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: true
+    });
+  }
+
+  init(context) {
     this.component = context;
     this.url = context.props.url;
     this.width = context.props.width;
@@ -20,28 +30,38 @@ class Paint {
     this.lightY = context.props.lightY;
     this.lightZ = context.props.lightZ;
     this.lightColor = context.props.lightColor;
-  }
 
-  init() {
+    if (this.mesh !== undefined) {
+      this.mesh.geometry.dispose();
+      this.mesh.material.dispose();
+      this.scene.remove(this.mesh);
+      delete this.mesh;
+    }
+    const directionalLightObj = this.scene.getObjectByName(DIRECTIONAL_LIGHT);
+    if (directionalLightObj) {
+      this.scene.remove(directionalLightObj);
+    }
+
+    if (this.animationRequestId) {
+      cancelAnimationFrame(this.animationRequestId);
+    }
+
     //Detector.addGetWebGLMessage();
-    this.scene = new THREE.Scene();
     this.distance = 10000;
     let directionalLight = new THREE.DirectionalLight(this.lightColor);
     directionalLight.position.x = this.lightX;
     directionalLight.position.y = this.lightY;
     directionalLight.position.z = this.lightZ;
     directionalLight.position.normalize();
+    directionalLight.name = DIRECTIONAL_LIGHT;
     this.scene.add(directionalLight);
 
     this.addSTLToScene();
   }
 
   addSTLToScene() {
-    let loader = new THREE.STLLoader();
-    loader.crossOrigin = '';
-
-    loader.load(this.url, (geometry) => {
-
+    this.loader.crossOrigin = '';
+    this.loader.load(this.url, geometry => {
       // Calculate mesh noramls for MeshLambertMaterial.
       geometry.computeFaceNormals();
       geometry.computeVertexNormals();
@@ -52,10 +72,10 @@ class Paint {
       this.mesh = new THREE.Mesh(
         geometry,
         new THREE.MeshLambertMaterial({
-            overdraw:true,
-            color: this.modelColor,
-          }
-        ));
+          overdraw: true,
+          color: this.modelColor
+        })
+      );
       // Set the object's dimensions
       geometry.computeBoundingBox();
       this.xDims = geometry.boundingBox.max.x - geometry.boundingBox.min.x;
@@ -81,7 +101,12 @@ class Paint {
 
   addCamera() {
     // Add the camera
-    this.camera = new THREE.PerspectiveCamera(30, this.width / this.height, 1, this.distance);
+    this.camera = new THREE.PerspectiveCamera(
+      30,
+      this.width / this.height,
+      1,
+      this.distance
+    );
 
     if (this.cameraZ === null) {
       this.cameraZ = Math.max(this.xDims * 3, this.yDims * 3, this.zDims * 3);
@@ -93,9 +118,7 @@ class Paint {
 
     this.camera.lookAt(this.mesh);
 
-    this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
-    }); //new THREE.CanvasRenderer();
+    this.renderer.set;
     this.renderer.setSize(this.width, this.height);
     this.renderer.setClearColor(this.backgroundColor, 1);
   }
@@ -103,7 +126,10 @@ class Paint {
   addInteractionControls() {
     // Add controls for mouse interaction
     if (this.orbitControls) {
-      this.controls = new OrbitControls(this.camera, ReactDOM.findDOMNode(this.component));
+      this.controls = new OrbitControls(
+        this.camera,
+        ReactDOM.findDOMNode(this.component)
+      );
       this.controls.enableKeys = false;
       this.controls.addEventListener('change', this.orbitRender.bind(this));
     }
@@ -111,8 +137,10 @@ class Paint {
 
   addToReactComponent() {
     // Add to the React Component
-    ReactDOM.findDOMNode(this.component).replaceChild(this.renderer.domElement,
-      ReactDOM.findDOMNode(this.component).firstChild);
+    ReactDOM.findDOMNode(this.component).replaceChild(
+      this.renderer.domElement,
+      ReactDOM.findDOMNode(this.component).firstChild
+    );
   }
 
   /**
@@ -122,8 +150,9 @@ class Paint {
   animate() {
     // note: three.js includes requestAnimationFrame shim
     if (this.rotate) {
-      requestAnimationFrame(this.animate.bind(this));
+      this.animationRequestId = requestAnimationFrame(this.animate.bind(this));
     }
+
     if (this.orbitControls) {
       this.controls.update();
     }
@@ -140,6 +169,29 @@ class Paint {
     }
 
     this.render();
+  }
+
+  /**
+   * Deallocate Mesh, renderer context.
+   * @returns {void}
+   */
+  clean() {
+    if (this.mesh !== undefined) {
+      this.mesh.geometry.dispose();
+      this.mesh.material.dispose();
+      this.scene.remove(this.mesh);
+      delete this.mesh;
+    }
+    const directionalLightObj = this.scene.getObjectByName(DIRECTIONAL_LIGHT);
+    if (directionalLightObj) {
+      this.scene.remove(directionalLightObj);
+    }
+
+    if (this.animationRequestId) {
+      cancelAnimationFrame(this.animationRequestId);
+    }
+    this.renderer.dispose();
+    this.renderer.forceContextLoss();
   }
 
   /**

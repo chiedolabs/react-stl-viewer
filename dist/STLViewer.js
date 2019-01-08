@@ -44,16 +44,16 @@ var STLViewer = function (_Component) {
           mesh = void 0,
           controls = void 0;
       var rotate = this.props.rotate;
-      var paint = new _Paint2.default(this);
+      this.paint = new _Paint2.default();
 
-      init();
+      init.bind(this)();
 
       /**
        * The init method for the 3D scene
        * @returns {void}
        */
       function init() {
-        paint.init();
+        this.paint.init(this);
       }
 
       /**
@@ -103,16 +103,15 @@ var STLViewer = function (_Component) {
 
 
       this.props = nextProps;
-      var paint = new _Paint2.default(this);
 
-      init();
+      init.bind(this)();
 
       /**
        * The init method for the 3D scene
        * @returns {void}
        */
       function init() {
-        paint.init();
+        this.paint.init(this);
       }
 
       /**
@@ -145,13 +144,18 @@ var STLViewer = function (_Component) {
       };
     }
   }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      this.paint.clean();
+      delete this.paint;
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _props = this.props,
           width = _props.width,
           height = _props.height,
           modelColor = _props.modelColor;
-
 
       return _react2.default.createElement(
         'div',
@@ -165,12 +169,14 @@ var STLViewer = function (_Component) {
         },
         _react2.default.createElement(
           'div',
-          { style: {
+          {
+            style: {
               height: '100%',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center'
-            } },
+            }
+          },
           _react2.default.createElement(_halogenium.ScaleLoader, { color: modelColor, size: '16px' })
         )
       );
