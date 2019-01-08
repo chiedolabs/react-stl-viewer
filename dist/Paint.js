@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -6,11 +6,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Three = require("./Three");
+var _Three = require('./Three');
 
 var _Three2 = _interopRequireDefault(_Three);
 
-var _reactDom = require("react-dom");
+var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -18,9 +18,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var OrbitControls = require("three-orbit-controls")(_Three2.default);
+var OrbitControls = require('three-orbit-controls')(_Three2.default);
 
-var DIRECTIONAL_LIGHT = "directionalLight";
+var DIRECTIONAL_LIGHT = 'directionalLight';
 
 var Paint = function () {
   function Paint() {
@@ -34,7 +34,7 @@ var Paint = function () {
   }
 
   _createClass(Paint, [{
-    key: "init",
+    key: 'init',
     value: function init(context) {
       this.component = context;
       this.url = context.props.url;
@@ -81,11 +81,11 @@ var Paint = function () {
       this.addSTLToScene();
     }
   }, {
-    key: "addSTLToScene",
+    key: 'addSTLToScene',
     value: function addSTLToScene() {
       var _this = this;
 
-      this.loader.crossOrigin = "";
+      this.loader.crossOrigin = '';
       this.loader.load(this.url, function (geometry) {
         // Calculate mesh noramls for MeshLambertMaterial.
         geometry.computeFaceNormals();
@@ -121,7 +121,7 @@ var Paint = function () {
       });
     }
   }, {
-    key: "addCamera",
+    key: 'addCamera',
     value: function addCamera() {
       // Add the camera
       this.camera = new _Three2.default.PerspectiveCamera(30, this.width / this.height, 1, this.distance);
@@ -141,17 +141,17 @@ var Paint = function () {
       this.renderer.setClearColor(this.backgroundColor, 1);
     }
   }, {
-    key: "addInteractionControls",
+    key: 'addInteractionControls',
     value: function addInteractionControls() {
       // Add controls for mouse interaction
       if (this.orbitControls) {
         this.controls = new OrbitControls(this.camera, _reactDom2.default.findDOMNode(this.component));
         this.controls.enableKeys = false;
-        this.controls.addEventListener("change", this.orbitRender.bind(this));
+        this.controls.addEventListener('change', this.orbitRender.bind(this));
       }
     }
   }, {
-    key: "addToReactComponent",
+    key: 'addToReactComponent',
     value: function addToReactComponent() {
       // Add to the React Component
       _reactDom2.default.findDOMNode(this.component).replaceChild(this.renderer.domElement, _reactDom2.default.findDOMNode(this.component).firstChild);
@@ -163,7 +163,7 @@ var Paint = function () {
      */
 
   }, {
-    key: "animate",
+    key: 'animate',
     value: function animate() {
       // note: three.js includes requestAnimationFrame shim
       if (this.rotate) {
@@ -182,7 +182,7 @@ var Paint = function () {
      */
 
   }, {
-    key: "orbitRender",
+    key: 'orbitRender',
     value: function orbitRender() {
       if (this.rotate) {
         this.rotate = false;
@@ -197,7 +197,7 @@ var Paint = function () {
      */
 
   }, {
-    key: "clean",
+    key: 'clean',
     value: function clean() {
       if (this.mesh !== undefined) {
         this.mesh.geometry.dispose();
@@ -223,7 +223,7 @@ var Paint = function () {
      */
 
   }, {
-    key: "render",
+    key: 'render',
     value: function render() {
       if (this.mesh && this.rotate) {
         this.mesh.rotation.x += this.rotationSpeeds[0];

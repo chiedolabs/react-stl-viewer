@@ -41,48 +41,8 @@ class STLViewer extends Component {
   };
 
   componentDidMount() {
-    let camera, scene, renderer, mesh, controls;
-    let rotate = this.props.rotate;
     this.paint = new Paint();
-
-    init.bind(this)();
-
-    /**
-     * The init method for the 3D scene
-     * @returns {void}
-     */
-    function init() {
-      this.paint.init(this);
-    }
-
-    /**
-     * Animate the scene
-     * @returns {void}
-     */
-    let animate = () => {
-      // note: three.js includes requestAnimationFrame shim
-      if (rotate) {
-        requestAnimationFrame(animate);
-      }
-      if (this.props.orbitControls) {
-        controls.update();
-      }
-      render();
-    };
-
-    /**
-     * Render the scene
-     * @returns {void}
-     */
-    let render = () => {
-      if (mesh && rotate) {
-        mesh.rotation.x += this.rotationSpeeds[0];
-        mesh.rotation.y += this.rotationSpeeds[1];
-        mesh.rotation.z += this.rotationSpeeds[2];
-      }
-
-      renderer.render(scene, camera);
-    };
+    this.paint.init(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -90,49 +50,8 @@ class STLViewer extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    let camera, scene, renderer, mesh, controls;
-    let { rotate, rotationSpeeds } = nextProps;
-
     this.props = nextProps;
-
-    init.bind(this)();
-
-    /**
-     * The init method for the 3D scene
-     * @returns {void}
-     */
-    function init() {
-      this.paint.init(this);
-    }
-
-    /**
-     * Animate the scene
-     * @returns {void}
-     */
-    let animate = () => {
-      // note: three.js includes requestAnimationFrame shim
-      if (rotate) {
-        requestAnimationFrame(animate);
-      }
-      if (nextProps.orbitControls) {
-        controls.update();
-      }
-      render();
-    };
-
-    /**
-     * Render the scene
-     * @returns {void}
-     */
-    let render = () => {
-      if (mesh && rotate) {
-        mesh.rotation.x += rotationSpeeds[0];
-        mesh.rotation.y += rotationSpeeds[1];
-        mesh.rotation.z += rotationSpeeds[2];
-      }
-
-      renderer.render(scene, camera);
-    };
+    this.paint.init(this);
   }
 
   componentWillUnmount() {

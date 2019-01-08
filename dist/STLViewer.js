@@ -36,54 +36,8 @@ var STLViewer = function (_Component) {
   _createClass(STLViewer, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this2 = this;
-
-      var camera = void 0,
-          scene = void 0,
-          renderer = void 0,
-          mesh = void 0,
-          controls = void 0;
-      var rotate = this.props.rotate;
       this.paint = new _Paint2.default();
-
-      init.bind(this)();
-
-      /**
-       * The init method for the 3D scene
-       * @returns {void}
-       */
-      function init() {
-        this.paint.init(this);
-      }
-
-      /**
-       * Animate the scene
-       * @returns {void}
-       */
-      var animate = function animate() {
-        // note: three.js includes requestAnimationFrame shim
-        if (rotate) {
-          requestAnimationFrame(animate);
-        }
-        if (_this2.props.orbitControls) {
-          controls.update();
-        }
-        render();
-      };
-
-      /**
-       * Render the scene
-       * @returns {void}
-       */
-      var render = function render() {
-        if (mesh && rotate) {
-          mesh.rotation.x += _this2.rotationSpeeds[0];
-          mesh.rotation.y += _this2.rotationSpeeds[1];
-          mesh.rotation.z += _this2.rotationSpeeds[2];
-        }
-
-        renderer.render(scene, camera);
-      };
+      this.paint.init(this);
     }
   }, {
     key: 'shouldComponentUpdate',
@@ -93,55 +47,8 @@ var STLViewer = function (_Component) {
   }, {
     key: 'componentWillUpdate',
     value: function componentWillUpdate(nextProps, nextState) {
-      var camera = void 0,
-          scene = void 0,
-          renderer = void 0,
-          mesh = void 0,
-          controls = void 0;
-      var rotate = nextProps.rotate,
-          rotationSpeeds = nextProps.rotationSpeeds;
-
-
       this.props = nextProps;
-
-      init.bind(this)();
-
-      /**
-       * The init method for the 3D scene
-       * @returns {void}
-       */
-      function init() {
-        this.paint.init(this);
-      }
-
-      /**
-       * Animate the scene
-       * @returns {void}
-       */
-      var animate = function animate() {
-        // note: three.js includes requestAnimationFrame shim
-        if (rotate) {
-          requestAnimationFrame(animate);
-        }
-        if (nextProps.orbitControls) {
-          controls.update();
-        }
-        render();
-      };
-
-      /**
-       * Render the scene
-       * @returns {void}
-       */
-      var render = function render() {
-        if (mesh && rotate) {
-          mesh.rotation.x += rotationSpeeds[0];
-          mesh.rotation.y += rotationSpeeds[1];
-          mesh.rotation.z += rotationSpeeds[2];
-        }
-
-        renderer.render(scene, camera);
-      };
+      this.paint.init(this);
     }
   }, {
     key: 'componentWillUnmount',
