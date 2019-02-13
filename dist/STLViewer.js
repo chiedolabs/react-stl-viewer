@@ -105,9 +105,7 @@ STLViewer.propTypes = {
   cameraX: _propTypes2.default.number,
   cameraY: _propTypes2.default.number,
   cameraZ: _propTypes2.default.number,
-  lightX: _propTypes2.default.number,
-  lightY: _propTypes2.default.number,
-  lightZ: _propTypes2.default.number,
+  lights: _propTypes2.default.array,
   lightColor: _propTypes2.default.string,
   rotationSpeeds: _propTypes2.default.arrayOf(_propTypes2.default.number)
 };
@@ -121,9 +119,7 @@ STLViewer.defaultProps = {
   cameraX: 0,
   cameraY: 0,
   cameraZ: null,
-  lightX: 0,
-  lightY: 0,
-  lightZ: 1,
+  lights: [0, 0, 1],
   lightColor: '#ffffff',
   rotationSpeeds: [0, 0, 0.02]
 };

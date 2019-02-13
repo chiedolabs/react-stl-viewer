@@ -16,6 +16,8 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var OrbitControls = require('three-orbit-controls')(_Three2.default);
@@ -31,6 +33,7 @@ var Paint = function () {
     this.renderer = new _Three2.default.WebGLRenderer({
       antialias: true
     });
+    this.reqNumber = 0;
   }
 
   _createClass(Paint, [{
@@ -48,16 +51,13 @@ var Paint = function () {
       this.cameraY = context.props.cameraY;
       this.cameraZ = context.props.cameraZ;
       this.rotationSpeeds = context.props.rotationSpeeds;
-      this.lightX = context.props.lightX;
-      this.lightY = context.props.lightY;
-      this.lightZ = context.props.lightZ;
+      this.lights = context.props.lights;
       this.lightColor = context.props.lightColor;
 
       if (this.mesh !== undefined) {
+        this.scene.remove(this.mesh);
         this.mesh.geometry.dispose();
         this.mesh.material.dispose();
-        this.scene.remove(this.mesh);
-        delete this.mesh;
       }
       var directionalLightObj = this.scene.getObjectByName(DIRECTIONAL_LIGHT);
       if (directionalLightObj) {
@@ -70,23 +70,43 @@ var Paint = function () {
 
       //Detector.addGetWebGLMessage();
       this.distance = 10000;
-      var directionalLight = new _Three2.default.DirectionalLight(this.lightColor);
-      directionalLight.position.x = this.lightX;
-      directionalLight.position.y = this.lightY;
-      directionalLight.position.z = this.lightZ;
-      directionalLight.position.normalize();
-      directionalLight.name = DIRECTIONAL_LIGHT;
-      this.scene.add(directionalLight);
 
-      this.addSTLToScene();
+      // lights processing
+      var hasMultipleLights = this.lights.reduce(function (acc, item) {
+        return acc && Array.isArray(item);
+      }, true);
+      if (hasMultipleLights) {
+        this.lights.forEach(this.addLight.bind(this));
+      } else {
+        this.addLight(this.lights);
+      }
+
+      this.reqNumber += 1;
+      this.addSTLToScene(this.reqNumber);
+    }
+  }, {
+    key: 'addLight',
+    value: function addLight(lights) {
+      var _directionalLight$pos;
+
+      var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+      var directionalLight = new _Three2.default.DirectionalLight(this.lightColor);
+      (_directionalLight$pos = directionalLight.position).set.apply(_directionalLight$pos, _toConsumableArray(lights));
+      directionalLight.name = DIRECTIONAL_LIGHT + index;
+      directionalLight.position.normalize();
+      this.scene.add(directionalLight);
     }
   }, {
     key: 'addSTLToScene',
-    value: function addSTLToScene() {
+    value: function addSTLToScene(reqId) {
       var _this = this;
 
       this.loader.crossOrigin = '';
       this.loader.load(this.url, function (geometry) {
+        if (_this.reqNumber !== reqId) {
+          return;
+        }
         // Calculate mesh noramls for MeshLambertMaterial.
         geometry.computeFaceNormals();
         geometry.computeVertexNormals();

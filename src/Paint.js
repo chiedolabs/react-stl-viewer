@@ -27,9 +27,7 @@ class Paint {
     this.cameraY = context.props.cameraY;
     this.cameraZ = context.props.cameraZ;
     this.rotationSpeeds = context.props.rotationSpeeds;
-    this.lightX = context.props.lightX;
-    this.lightY = context.props.lightY;
-    this.lightZ = context.props.lightZ;
+    this.lights = context.props.lights;
     this.lightColor = context.props.lightColor;
 
     if (this.mesh !== undefined) {
@@ -48,16 +46,28 @@ class Paint {
 
     //Detector.addGetWebGLMessage();
     this.distance = 10000;
-    let directionalLight = new THREE.DirectionalLight(this.lightColor);
-    directionalLight.position.x = this.lightX;
-    directionalLight.position.y = this.lightY;
-    directionalLight.position.z = this.lightZ;
-    directionalLight.position.normalize();
-    directionalLight.name = DIRECTIONAL_LIGHT;
-    this.scene.add(directionalLight);
+
+    // lights processing
+    const hasMultipleLights = this.lights.reduce(
+      (acc, item) => acc && Array.isArray(item),
+      true
+    );
+    if (hasMultipleLights) {
+      this.lights.forEach(this.addLight.bind(this));
+    } else {
+      this.addLight(this.lights);
+    }
 
     this.reqNumber += 1;
     this.addSTLToScene(this.reqNumber);
+  }
+
+  addLight(lights, index = 0) {
+    const directionalLight = new THREE.DirectionalLight(this.lightColor);
+    directionalLight.position.set(...lights);
+    directionalLight.name = DIRECTIONAL_LIGHT + index;
+    directionalLight.position.normalize();
+    this.scene.add(directionalLight);
   }
 
   addSTLToScene(reqId) {
