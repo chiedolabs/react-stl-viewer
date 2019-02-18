@@ -16,7 +16,6 @@ class Paint {
 
   init(context) {
     this.component = context;
-    this.url = context.props.url;
     this.width = context.props.width;
     this.height = context.props.height;
     this.modelColor = context.props.modelColor;
@@ -29,11 +28,13 @@ class Paint {
     this.rotationSpeeds = context.props.rotationSpeeds;
     this.lights = context.props.lights;
     this.lightColor = context.props.lightColor;
+    this.model = context.props.model;
 
     if (this.mesh !== undefined) {
       this.scene.remove(this.mesh);
       this.mesh.geometry.dispose();
       this.mesh.material.dispose();
+      this.scene.remove(this.grid);
     }
     const directionalLightObj = this.scene.getObjectByName(DIRECTIONAL_LIGHT);
     if (directionalLightObj) {
@@ -70,12 +71,36 @@ class Paint {
     this.scene.add(directionalLight);
   }
 
+  loadSTLFromUrl(url, reqId) {
+    return new Promise(resolve => {
+      this.loader.crossOrigin = '';
+      this.loader.loadFromUrl(url, geometry => {
+        if (this.reqNumber !== reqId) {
+          return;
+        }
+        resolve(geometry);
+      });
+    });
+  }
+
+  loadFromFile(file) {
+    return new Promise(resolve => {
+      this.loader.loadFromFile(file, geometry => {
+        resolve(geometry);
+      });
+    });
+  }
+
   addSTLToScene(reqId) {
-    this.loader.crossOrigin = '';
-    this.loader.load(this.url, geometry => {
-      if (this.reqNumber !== reqId) {
-        return;
-      }
+    let loadPromise;
+    if (typeof this.model === 'string') {
+      loadPromise = this.loadSTLFromUrl(this.model, reqId);
+    } else if (this.model instanceof ArrayBuffer) {
+      loadPromise = this.loadFromFile(this.model);
+    } else {
+      return Promise.resolve(null);
+    }
+    return loadPromise.then(geometry => {
       // Calculate mesh noramls for MeshLambertMaterial.
       geometry.computeFaceNormals();
       geometry.computeVertexNormals();

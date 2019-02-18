@@ -18,7 +18,11 @@ class STLViewer extends Component {
     cameraZ: PropTypes.number,
     lights: PropTypes.array,
     lightColor: PropTypes.string,
-    rotationSpeeds: PropTypes.arrayOf(PropTypes.number)
+    rotationSpeeds: PropTypes.arrayOf(PropTypes.number),
+    model: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.instanceOf(ArrayBuffer)
+    ]).isRequired
   };
 
   static defaultProps = {
@@ -33,7 +37,8 @@ class STLViewer extends Component {
     cameraZ: null,
     lights: [0, 0, 1],
     lightColor: '#ffffff',
-    rotationSpeeds: [0, 0, 0.02]
+    rotationSpeeds: [0, 0, 0.02],
+    model: undefined
   };
 
   componentDidMount() {

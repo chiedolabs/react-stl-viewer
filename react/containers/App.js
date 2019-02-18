@@ -5,7 +5,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      color: '#FF0000'
+      color: '#FF0000',
+      model: undefined
     };
 
     this.clickBlue = this.clickBlue.bind(this);
@@ -22,13 +23,24 @@ class App extends Component {
     this.setState({ color: '#FF0000' });
   }
 
+  onChange = ({ target }) => {
+    const { files } = target;
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(files[0]);
+    reader.onload = () => {
+      this.setState({ model: reader.result });
+    };
+  };
+
   render() {
     return (
       <div>
+        <input id="image-file" type="file" onChange={this.onChange} />
         <STLViewer
-          url="dist/static/crazy-thing.stl"
           modelColor={this.state.color}
           lights={[[0.5, 1, -1], [1, 1, 1]]}
+          rotate={true}
+          model={this.state.model}
         />
         <button onClick={this.clickRed}>red</button>
         <button onClick={this.clickBlue}>blue</button>
