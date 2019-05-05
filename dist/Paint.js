@@ -101,7 +101,6 @@ var Paint = function () {
     key: 'addSTLToScene',
     value: function addSTLToScene(reqId) {
       var _this = this;
-      var material;
 
       this.loader.crossOrigin = '';
       this.loader.load(this.url, function (geometry) {
@@ -115,19 +114,10 @@ var Paint = function () {
         // Center the object
         geometry.center();
 
-        if (geometry.hasColors) {
-          material = new _Three2.default.MeshPhongMaterial({
-            opacity: geometry.alpha,
-            vertexColors: _Three2.default.VertexColors
-          });
-        } else {
-          material = new _Three2.default.MeshLambertMaterial({
-            overdraw: true,
-            color: _this.modelColor
-          });
-        }
-
-        _this.mesh = new _Three2.default.Mesh(geometry, material);
+        _this.mesh = new _Three2.default.Mesh(geometry, new _Three2.default.MeshLambertMaterial({
+          overdraw: true,
+          color: _this.modelColor
+        }));
         // Set the object's dimensions
         geometry.computeBoundingBox();
         _this.xDims = geometry.boundingBox.max.x - geometry.boundingBox.min.x;

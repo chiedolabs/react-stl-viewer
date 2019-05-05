@@ -83,13 +83,19 @@ class Paint {
       // Center the object
       geometry.center();
 
-      this.mesh = new THREE.Mesh(
-        geometry,
-        new THREE.MeshLambertMaterial({
-          overdraw: true,
-          color: this.modelColor
-        })
-      );
+      let material = new THREE.MeshLambertMaterial({
+        overdraw: true,
+        color: this.modelColor
+      });
+
+      if (geometry.hasColors) {
+        material = new THREE.MeshPhongMaterial({
+          opacity: geometry.alpha,
+          vertexColors: THREE.VertexColors
+        });
+      }
+
+      this.mesh = new THREE.Mesh(geometry, material);
       // Set the object's dimensions
       geometry.computeBoundingBox();
       this.xDims = geometry.boundingBox.max.x - geometry.boundingBox.min.x;
