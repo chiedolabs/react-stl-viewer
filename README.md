@@ -18,13 +18,13 @@ See a <a href="http://chiedolabs.github.io/react-stl-viewer/" target="_blank">li
 	import STLViewer from 'stl-viewer'
 	
 	<STLViewer
-   		url='http://www.example.com/example-url.stl'
-    	width={400}
+   		model='http://www.example.com/example-url.stl'
+    		width={400}
    		height={400}
-    	modelColor='#B92C2C'
-    	backgroundColor='#EAEAEA'
-    	rotate={true}
-    	orbitControls={true}
+    		modelColor='#B92C2C'
+    		backgroundColor='#EAEAEA'
+    		rotate={true}
+    		orbitControls={true}
   	/>
 
 ## Contributing
