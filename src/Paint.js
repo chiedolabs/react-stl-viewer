@@ -28,6 +28,7 @@ class Paint {
     this.rotationSpeeds = context.props.rotationSpeeds;
     this.lights = context.props.lights;
     this.lightColor = context.props.lightColor;
+    this.distance = context.props.distance;
     this.model = context.props.model;
 
     if (this.mesh !== undefined) {
@@ -46,7 +47,6 @@ class Paint {
     }
 
     //Detector.addGetWebGLMessage();
-    this.distance = 10000;
 
     // lights processing
     const hasMultipleLights = this.lights.reduce(
@@ -75,9 +75,12 @@ class Paint {
     return new Promise(resolve => {
       this.loader.crossOrigin = '';
       this.loader.loadFromUrl(url, geometry => {
+        console.log("STLViewer/Paint/loadFromUrl", url, geometry, this.reqNumber, reqId);
         if (this.reqNumber !== reqId) {
           return;
         }
+
+        console.log("STLViewer/Paint/loadFromUrl/resolve", geometry);
         resolve(geometry);
       });
     });

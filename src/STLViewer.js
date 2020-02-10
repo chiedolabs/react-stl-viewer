@@ -19,6 +19,7 @@ class STLViewer extends Component {
     lights: PropTypes.array,
     lightColor: PropTypes.string,
     rotationSpeeds: PropTypes.arrayOf(PropTypes.number),
+    distance: PropTypes.number,
     model: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.instanceOf(ArrayBuffer)
@@ -38,7 +39,8 @@ class STLViewer extends Component {
     lights: [0, 0, 1],
     lightColor: '#ffffff',
     rotationSpeeds: [0, 0, 0.02],
-    model: undefined
+    distance: 10000,
+    model: undefined,
   };
 
   componentDidMount() {
@@ -62,6 +64,7 @@ class STLViewer extends Component {
 
   render() {
     const { width, height, modelColor } = this.props;
+
     return (
       <div
         className={this.props.className}
@@ -71,7 +74,7 @@ class STLViewer extends Component {
           overflow: 'hidden'
         }}
       >
-        <div
+       <div
           style={{
             height: '100%',
             display: 'flex',

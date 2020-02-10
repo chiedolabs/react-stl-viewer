@@ -52,6 +52,7 @@ var Paint = function () {
       this.rotationSpeeds = context.props.rotationSpeeds;
       this.lights = context.props.lights;
       this.lightColor = context.props.lightColor;
+      this.distance = context.props.distance;
       this.model = context.props.model;
 
       if (this.mesh !== undefined) {
@@ -70,7 +71,6 @@ var Paint = function () {
       }
 
       //Detector.addGetWebGLMessage();
-      this.distance = 10000;
 
       // lights processing
       var hasMultipleLights = this.lights.reduce(function (acc, item) {
@@ -106,9 +106,12 @@ var Paint = function () {
       return new Promise(function (resolve) {
         _this.loader.crossOrigin = '';
         _this.loader.loadFromUrl(url, function (geometry) {
+          console.log("STLViewer/Paint/loadFromUrl", url, geometry, _this.reqNumber, reqId);
           if (_this.reqNumber !== reqId) {
             return;
           }
+
+          console.log("STLViewer/Paint/loadFromUrl/resolve", geometry);
           resolve(geometry);
         });
       });
@@ -131,13 +134,16 @@ var Paint = function () {
 
       var loadPromise = void 0;
       if (typeof this.model === 'string') {
+        console.log("STLViewer/Paint/loadSTLFromUrl", JSON.stringify(this.model));
         loadPromise = this.loadSTLFromUrl(this.model, reqId);
       } else if (this.model instanceof ArrayBuffer) {
+        console.log("STLViewer/Paint/loadFromFile", JSON.stringify(this.model));
         loadPromise = this.loadFromFile(this.model);
       } else {
         return Promise.resolve(null);
       }
       return loadPromise.then(function (geometry) {
+        console.log("STLViewer/Paint/Calculate mesh noramls for MeshLambertMaterial");
         // Calculate mesh noramls for MeshLambertMaterial.
         geometry.computeFaceNormals();
         geometry.computeVertexNormals();
@@ -177,6 +183,7 @@ var Paint = function () {
         _this3.addToReactComponent();
 
         // Start the animation
+        console.log("STLViewer/Paint/start animation");
         _this3.animate();
       });
     }

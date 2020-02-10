@@ -64,6 +64,7 @@ var STLViewer = function (_Component) {
           height = _props.height,
           modelColor = _props.modelColor;
 
+
       return _react2.default.createElement(
         'div',
         {
@@ -108,6 +109,7 @@ STLViewer.propTypes = {
   lights: _propTypes2.default.array,
   lightColor: _propTypes2.default.string,
   rotationSpeeds: _propTypes2.default.arrayOf(_propTypes2.default.number),
+  distance: _propTypes2.default.number,
   model: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.instanceOf(ArrayBuffer)]).isRequired
 };
 STLViewer.defaultProps = {
@@ -123,6 +125,7 @@ STLViewer.defaultProps = {
   lights: [0, 0, 1],
   lightColor: '#ffffff',
   rotationSpeeds: [0, 0, 0.02],
+  distance: 10000,
   model: undefined
 };
 
