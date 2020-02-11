@@ -54,6 +54,7 @@ var Paint = function () {
       this.lightColor = context.props.lightColor;
       this.distance = context.props.distance;
       this.model = context.props.model;
+      this._isMounted = context.props._isMounted;
 
       if (this.mesh !== undefined) {
         this.scene.remove(this.mesh);
@@ -134,16 +135,13 @@ var Paint = function () {
 
       var loadPromise = void 0;
       if (typeof this.model === 'string') {
-        console.log("STLViewer/Paint/loadSTLFromUrl", JSON.stringify(this.model));
         loadPromise = this.loadSTLFromUrl(this.model, reqId);
       } else if (this.model instanceof ArrayBuffer) {
-        console.log("STLViewer/Paint/loadFromFile", JSON.stringify(this.model));
         loadPromise = this.loadFromFile(this.model);
       } else {
         return Promise.resolve(null);
       }
       return loadPromise.then(function (geometry) {
-        console.log("STLViewer/Paint/Calculate mesh noramls for MeshLambertMaterial");
         // Calculate mesh noramls for MeshLambertMaterial.
         geometry.computeFaceNormals();
         geometry.computeVertexNormals();
@@ -183,7 +181,6 @@ var Paint = function () {
         _this3.addToReactComponent();
 
         // Start the animation
-        console.log("STLViewer/Paint/start animation");
         _this3.animate();
       });
     }
@@ -211,7 +208,7 @@ var Paint = function () {
     key: 'addInteractionControls',
     value: function addInteractionControls() {
       // Add controls for mouse interaction
-      if (this.orbitControls) {
+      if (this.orbitControls && this._isMounted) {
         this.controls = new OrbitControls(this.camera, _reactDom2.default.findDOMNode(this.component));
         this.controls.enableKeys = false;
         this.controls.addEventListener('change', this.orbitRender.bind(this));
@@ -240,6 +237,7 @@ var Paint = function () {
       if (this.orbitControls) {
         this.controls.update();
       }
+
       this.render();
     }
 
