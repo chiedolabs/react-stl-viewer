@@ -23,7 +23,8 @@ class STLViewer extends Component {
     model: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.instanceOf(ArrayBuffer)
-    ]).isRequired
+    ]).isRequired,
+    _isMounted: PropTypes.bool
   };
 
   static defaultProps = {
@@ -41,9 +42,11 @@ class STLViewer extends Component {
     rotationSpeeds: [0, 0, 0.02],
     distance: 10000,
     model: undefined,
+    _isMounted: true,
   };
 
   componentDidMount() {
+    this._isMounted = true;
     this.paint = new Paint();
     this.paint.init(this);
   }
@@ -58,6 +61,7 @@ class STLViewer extends Component {
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     this.paint.clean();
     delete this.paint;
   }

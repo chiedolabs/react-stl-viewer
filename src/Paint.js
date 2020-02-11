@@ -30,6 +30,7 @@ class Paint {
     this.lightColor = context.props.lightColor;
     this.distance = context.props.distance;
     this.model = context.props.model;
+    this._isMounted = context.props._isMounted;
 
     if (this.mesh !== undefined) {
       this.scene.remove(this.mesh);
@@ -173,7 +174,7 @@ class Paint {
 
   addInteractionControls() {
     // Add controls for mouse interaction
-    if (this.orbitControls) {
+    if (this.orbitControls && this._isMounted) {
       this.controls = new OrbitControls(
         this.camera,
         ReactDOM.findDOMNode(this.component)
@@ -204,6 +205,7 @@ class Paint {
     if (this.orbitControls) {
       this.controls.update();
     }
+
     this.render();
   }
 
