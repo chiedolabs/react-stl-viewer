@@ -36,6 +36,7 @@ var STLViewer = function (_Component) {
   _createClass(STLViewer, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      this._isMounted = true;
       this.paint = new _Paint2.default();
       this.paint.init(this);
     }
@@ -53,6 +54,7 @@ var STLViewer = function (_Component) {
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
+      this._isMounted = false;
       this.paint.clean();
       delete this.paint;
     }
@@ -63,6 +65,7 @@ var STLViewer = function (_Component) {
           width = _props.width,
           height = _props.height,
           modelColor = _props.modelColor;
+
 
       return _react2.default.createElement(
         'div',
@@ -108,7 +111,9 @@ STLViewer.propTypes = {
   lights: _propTypes2.default.array,
   lightColor: _propTypes2.default.string,
   rotationSpeeds: _propTypes2.default.arrayOf(_propTypes2.default.number),
-  model: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.instanceOf(ArrayBuffer)]).isRequired
+  distance: _propTypes2.default.number,
+  model: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.instanceOf(ArrayBuffer)]).isRequired,
+  _isMounted: _propTypes2.default.bool
 };
 STLViewer.defaultProps = {
   backgroundColor: '#EAEAEA',
@@ -123,7 +128,9 @@ STLViewer.defaultProps = {
   lights: [0, 0, 1],
   lightColor: '#ffffff',
   rotationSpeeds: [0, 0, 0.02],
-  model: undefined
+  distance: 10000,
+  model: undefined,
+  _isMounted: true
 };
 
 

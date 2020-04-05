@@ -52,7 +52,9 @@ var Paint = function () {
       this.rotationSpeeds = context.props.rotationSpeeds;
       this.lights = context.props.lights;
       this.lightColor = context.props.lightColor;
+      this.distance = context.props.distance;
       this.model = context.props.model;
+      this._isMounted = context.props._isMounted;
 
       if (this.mesh !== undefined) {
         this.scene.remove(this.mesh);
@@ -70,7 +72,6 @@ var Paint = function () {
       }
 
       //Detector.addGetWebGLMessage();
-      this.distance = 10000;
 
       // lights processing
       var hasMultipleLights = this.lights.reduce(function (acc, item) {
@@ -106,9 +107,12 @@ var Paint = function () {
       return new Promise(function (resolve) {
         _this.loader.crossOrigin = '';
         _this.loader.loadFromUrl(url, function (geometry) {
+          console.log("STLViewer/Paint/loadFromUrl", url, geometry, _this.reqNumber, reqId);
           if (_this.reqNumber !== reqId) {
             return;
           }
+
+          console.log("STLViewer/Paint/loadFromUrl/resolve", geometry);
           resolve(geometry);
         });
       });
@@ -204,7 +208,7 @@ var Paint = function () {
     key: 'addInteractionControls',
     value: function addInteractionControls() {
       // Add controls for mouse interaction
-      if (this.orbitControls) {
+      if (this.orbitControls && this._isMounted) {
         this.controls = new OrbitControls(this.camera, _reactDom2.default.findDOMNode(this.component));
         this.controls.enableKeys = false;
         this.controls.addEventListener('change', this.orbitRender.bind(this));
@@ -233,6 +237,7 @@ var Paint = function () {
       if (this.orbitControls) {
         this.controls.update();
       }
+
       this.render();
     }
 
