@@ -24,7 +24,7 @@
     "prepublish": "yarn run build"
   },
   "dependencies": {
-    "halogenium": "^2.2.3",
+    "halogenium": ">= 2.2.3 < 2.3",
     "prop-types": "^15.6.1",
     "three": "^0.72.0",
     "three-orbit-controls": "^72.0.0"
